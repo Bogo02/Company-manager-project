@@ -1,0 +1,127 @@
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor02">
+      <ul class="navbar-nav mr-auto">
+       <li class="nav-item active">
+        <a class="nav-link" data-toggle="modal" data-target="#addProjectModal">Add Project<span class="sr-only">(current)</span></a>
+      </li>
+      </ul>
+       <form class="form-inline my-2 my-lg-0">
+          <input type="search" (ngModelChange)="searchProjects(key.value)" #key="ngModel" ngModel
+           name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search Project..." required>
+       </form>
+    </div>
+  </nav>
+    <!--Project boxes-->
+  <div class="container" id="third-container">
+    <div class="row">
+      <div *ngFor="let project of projects" class="col-md-6 col-xl-3">
+        <div class="card m-b-30">
+          <div class="card-body row">
+            <div class="col-6 card-title align-self-center mb-0" style="max-width: 100%;">
+              <h4 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{project?.name}}</h4>
+              <h6>Project</h6>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item"><i class="fa fa-envelope float-right"></i>{{project?.deadline}}</li>
+           </ul>
+              <div class="card-body">
+                 <div class="float-right btn-group btn-group-sm">
+                    <a (click)="onOpenProjectModal(project, 'edit')" class="btn btn-primary tooltips" data-placement="top" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
+                    <a (click)="onOpenProjectModal(project, 'delete')" class="btn btn-secondary tooltips" data-placement="top" data-original-title="Delete"><i class="fa fa-times"></i></a>
+                 </div>
+              </div>
+           </div>
+        </div>
+  </div>
+   <!-- Add Project Modal-->
+        <div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog" aria-labelledby="addProjectModalLabel" aria-hidden="true">
+          <!-- Modal content... -->
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addProjectModalLabel">Add Project</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form #addProjectForm="ngForm" (ngSubmit)="onAddProject(addProjectForm)">
+                  <!-- Form fields for adding aproject -->
+                  <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" ngModel name="name" class="form-control" id="name" placeholder="Name" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Deadline</label>
+                    <input type="text" ngModel name="deadline" class="form-control" id="deadline" placeholder="Deadline" >
+                 </div>
+                  <div class="modal-footer">
+                    <button type="button" id="add-employee-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button [disabled]="addProjectForm.invalid" type="submit" class="btn btn-primary">Save changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+<!-- Edit Project Modal -->
+<div class="modal fade" id="updateProjectModal" tabindex="-1" role="dialog" aria-labelledby="ProjectEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateProjectModalLabel">Edit Project: {{editProject?.name}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form #editForm="ngForm">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" ngModel="{{editProject?.name}}" name="name" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Name">
+            </div>
+            <div class="form-group">
+              <label for="deadline">Deadline</label>
+              <input type="text" ngModel="{{editProject?.deadline}}" name="deadline" class="form-control" id="deadline" placeholder="Deadline">
+            </div>
+            <input type="hidden" ngModel="{{editProject?.id}}" name="id" class="form-control" id="id" placeholder="ID">
+            <!-- Add other form fields for editing project details -->
+            <div class="modal-footer">
+              <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+              <button (click)="onUpdateProject(editForm.value)" data-dismiss="modal" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+          <!-- Delete Project Modal -->
+  <div class="modal fade" id="deleteProjectModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModelLabel">Delete Project</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete project {{deleteProject?.name}}?</p>
+        </div>
+        <div class="modal-footer">
+          <button (click)="onDeleteProject(deleteProject)" data-dismiss="modal" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+   <!--Notification for no projects -->
+ <div *ngIf="projects?.length === 0" class="col-lg-12 col-md-12 col-xl-12">
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">NO PROJECTS!</h4>
+    <p>No Projects were found.</p>
+  </div>
+</div>
